@@ -42,3 +42,30 @@ def criar_token(data:dict):
 
 def decodificar_token(token: str):
     payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+    return payload
+
+# Dependências do FastAPI
+def get_usuario_logado(request: Request):
+
+    token = request.cookies.get("acess_token")
+
+    if not token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED
+            detail="Não autenticado"
+        )
+    
+    try:
+        payload = decodificar_token(token)
+        email = payload.get("sub")
+        if email is None:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Token inválido"
+            )
+        return payload
+    except JWTError:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Token inválido"
+            )
