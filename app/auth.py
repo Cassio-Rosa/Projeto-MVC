@@ -51,7 +51,7 @@ def get_usuario_logado(request: Request):
 
     if not token:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED
+            status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Não autenticado"
         )
     
@@ -69,3 +69,10 @@ def get_usuario_logado(request: Request):
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Token inválido"
             )
+    
+def get_usuario_opcional(request: Request):
+
+    try:
+        return get_usuario_logado(request)
+    except HTTPException:
+        return None
