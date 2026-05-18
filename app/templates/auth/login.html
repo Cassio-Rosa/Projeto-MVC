@@ -11,12 +11,14 @@
     <form action="/auth/login" method="post">
         E-mail: <input type="email" name="email" required>
         <br><br>
-        Senha: <input type="password" name="senha_hash" required>
+        Senha: <input type="password" name="senha" required>
         <br><br>
 
         {% if error %}
             <p style="color: red;">{{ error }}</p>
         {% endif %}
+
+        <button type="submit">Login</button>
 
     </form>
 

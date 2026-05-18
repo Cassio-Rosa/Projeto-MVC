@@ -32,5 +32,6 @@ def tela_home(
             {"request": request})
     
     return templates.TemplateResponse(
-        request, "home.html",
+        request,
+        "home.html",
         {"request": request, "usuario": usuario})

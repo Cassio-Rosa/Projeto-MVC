@@ -15,7 +15,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 
 ALGORITHM = os.getenv("ALGORITHM")
 
-ACESS_TOKEN_EXPERIRE_MINUTES = os.getenv("ACESS_TOKEN_EXPERIRE_MINUTES")
+ACCESS_TOKEN_EXPERIRE_MINUTES = os.getenv("ACCESS_TOKEN_EXPERIRE_MINUTES")
 
 #CryptContext - configura o brcypt cp,p algoritimo de hash
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -33,7 +33,8 @@ def criar_token(data:dict):
     payload = data.copy()
 
     #Define quando o token expira
-    expira = datetime.now(timezone.utc) + timedelta(minutes=ACESS_TOKEN_EXPERIRE_MINUTES)
+    #Lembre que o ACESS_TOKEN_EXPERIRE_MINUTES é uma string, então precisamos converter para int
+    expira = datetime.now(timezone.utc) + timedelta(minutes= int(ACCESS_TOKEN_EXPERIRE_MINUTES))
     payload.update({"exp": expira})
 
     # Criar o tokwn jwt
@@ -47,7 +48,7 @@ def decodificar_token(token: str):
 # Dependências do FastAPI
 def get_usuario_logado(request: Request):
 
-    token = request.cookies.get("acess_token")
+    token = request.cookies.get("access_token")
 
     if not token:
         raise HTTPException(

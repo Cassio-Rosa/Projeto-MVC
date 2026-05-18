@@ -14,7 +14,7 @@ class Usuario(Base):
     senha_hash = Column(String(255), nullable=False)
 
     #Tipo do usuário
-    role = Column(String(20), default=False)
+    role = Column(String(20), default="operador")
 
     ativo = Column(Boolean, default=True)
 
