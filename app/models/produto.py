@@ -26,4 +26,4 @@ class Produto(Base):
         if self.image_path:
             return f"/static/{self.image_path}"
         else:
-            return "/static/images/produto-placeholder.png"
+            return "/static/img/produto-placeholder.png"
