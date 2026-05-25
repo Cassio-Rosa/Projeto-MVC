@@ -30,7 +30,7 @@
             <label for="role">Perfil:</label><br>
             <select id="role" name="role" required>
                 <option value="admin" {% if usuario.role == 'admin' %}selected{% endif %}>admin</option>
-                <option value="usuario" {% if usuario.role == 'operador' %}selected{% endif %}>operador</option>
+                <option value="operador" {% if usuario.role == 'operador' %}selected{% endif %}>operador</option>
             </select>
         </p>
 

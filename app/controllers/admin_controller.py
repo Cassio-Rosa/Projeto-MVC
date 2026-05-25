@@ -36,6 +36,53 @@ def listar_usuarios(
         }
     )
 
+
+# ROTA: Exibir formulário para criar novo usuário
+@router.get("/novo", response_class=HTMLResponse)
+def exibir_formulario_novo(
+    request: Request,
+    admin = Depends(get_admin),
+):
+    return templates.TemplateResponse(
+        request,
+        "usuarios/novo.html",
+        {"request": request, "admin": admin}
+    )
+
+
+# ROTA: Processar criação de novo usuário (pela interface admin)
+@router.post("/novo")
+def criar_usuario(
+    request: Request,
+    nome: str = Form(...),
+    email: str = Form(...),
+    senha: str = Form(...),
+    role: str = Form("operador"),
+    ativo: str = Form(None),
+    db: Session = Depends(get_db),
+    admin = Depends(get_admin),
+):
+    # Validação básica: email único
+    existente = db.query(Usuario).filter(Usuario.email == email).first()
+    if existente:
+        # Reexibe o formulário com erro e valores preenchidos
+        valores = {"nome": nome, "email": email, "role": role, "ativo": True if ativo == "on" else False}
+        return templates.TemplateResponse(request, "usuarios/novo.html", {"request": request, "erro": "E-mail já cadastrado", "valores": valores, "admin": admin})
+
+    status_ativo = True if ativo == "on" else False
+
+    novo = Usuario(
+        nome=nome,
+        email=email,
+        senha_hash=hash_senha(senha),
+        role=role,
+        ativo=status_ativo,
+    )
+    db.add(novo)
+    db.commit()
+
+    return RedirectResponse(url="/usuarios?criado=ok", status_code=status.HTTP_303_SEE_OTHER)
+
 # ... (mantenha os imports existentes)
 
 # ROTA 1: Exibir o formulário de edição pré-preenchido
@@ -83,10 +130,12 @@ def processar_edicao_usuario(
         return RedirectResponse(url="/usuarios", status_code=status.HTTP_303_SEE_OTHER)
 
     # Regra de segurança: Não permitir que o próprio admin logado se desative ou mude seu perfil
-    is_auto_proprio = (usuario.id == admin.id)
+    admin_id = admin.get("id") if isinstance(admin, dict) else getattr(admin, "id", None)
+    admin_role = admin.get("role") if isinstance(admin, dict) else getattr(admin, "role", None)
+    is_auto_proprio = (usuario.id == admin_id)
     status_ativo = True if ativo == "on" else False
 
-    if is_auto_proprio and (not status_ativo or role != admin.role):
+    if is_auto_proprio and (not status_ativo or role != admin_role):
         # Redireciona com erro se ele tentar se desativar ou mudar o próprio cargo nesta tela
         return RedirectResponse(url="/usuarios?erro=autoproprio", status_code=status.HTTP_303_SEE_OTHER)
 
@@ -98,7 +147,7 @@ def processar_edicao_usuario(
 
     # Se uma nova senha foi digitada, faz o hash e atualiza
     if senha and senha.strip() != "":
-        usuario.senha = hash_senha(senha) # Certifique-se que sua função hash_senha está importada corretamente
+        usuario.senha_hash = hash_senha(senha)
 
     # Salvar as alterações no banco de dados
     db.commit()

@@ -16,6 +16,9 @@
     {% if request.query_params.get('editado') == 'ok' %}
         <p style="color: green;">Usuário atualizado com sucesso!</p>
     {% endif %}
+    {% if request.query_params.get('atualizado') == 'ok' %}
+        <p style="color: green;">Status do usuário atualizado com sucesso!</p>
+    {% endif %}
     {% if request.query_params.get('erro') == 'autoproprio' %}
         <p style="color: red;">Você não pode desativar sua própria conta.</p>
     {% endif %}
