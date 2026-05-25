@@ -5,6 +5,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 
 from app.controllers import auth_controller
 from app.controllers import admin_controller
+from app.controllers import categoria_controller
 
 from app.auth import get_usuario_opcional
 
@@ -19,6 +20,7 @@ templates = Jinja2Templates(directory="app/templates")
 #Inclui os routeres do controller
 app.include_router(auth_controller.router)
 app.include_router(admin_controller.router)
+app.include_router(categoria_controller.router)
 
 
 @app.get("/")
