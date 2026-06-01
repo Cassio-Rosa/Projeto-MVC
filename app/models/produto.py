@@ -13,7 +13,7 @@ class Produto(Base):
     estoque_atual = Column(Integer, nullable=False, default=0)
     ativo = Column(Boolean, default=True)
 
-    image_path = Column(String(255), nullable=True)
+    imagem_path = Column(String(255), nullable=True)
 
     categoria_id = Column(Integer, ForeignKey("categorias.id", ondelete="SET NULL"), nullable=True)
 

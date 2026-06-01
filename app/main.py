@@ -7,6 +7,7 @@ from app.controllers import auth_controller
 from app.controllers import admin_controller
 from app.controllers import categoria_controller
 from app.controllers import produtos_controller
+from app.controllers import movimentacao_controller
 
 from app.auth import get_usuario_opcional
 
@@ -23,6 +24,7 @@ app.include_router(auth_controller.router)
 app.include_router(admin_controller.router)
 app.include_router(categoria_controller.router)
 app.include_router(produtos_controller.router)
+app.include_router(movimentacao_controller.router)
 
 @app.get("/")
 def tela_home(
